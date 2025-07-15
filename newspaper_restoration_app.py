@@ -6,6 +6,7 @@
 
 from trie import PrefixTrie
 from text_processor import TextProcessor
+from context_analyzer import integrate_context_analyzer
 import os
 
 class NewspaperRestorationApp:
@@ -30,7 +31,7 @@ class NewspaperRestorationApp:
         print("    3. Extra Feature One (Yang Shu Zhi)")
         print("    4. Extra Feature Two (Yang Shu Zhi)")
         print("    "+"-"*52)
-        print("    5. Extra Feature Three (Ashley Yong Lok Xi)")
+        print("    5. Context Analyzer (Ashley Yong Lok Xi)")
         print("    6. Extra Feature Four (Ashley Yong Lok Xi)")
         print("    "+"-"*52)
         print("    7. Exit")
@@ -238,7 +239,7 @@ class NewspaperRestorationApp:
                 elif choice == '4':
                     print("Additional Feature 2 - Not implemented yet")
                 elif choice == '5':
-                    print("Additional Feature 3 - Not implemented yet")
+                    integrate_context_analyzer()
                 elif choice == '6':
                     print("Additional Feature 4 - Not implemented yet")
                 elif choice == '7':
