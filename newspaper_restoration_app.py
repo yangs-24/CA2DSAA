@@ -8,10 +8,13 @@ from trie import PrefixTrie
 from text_processor import TextProcessor
 import os
 
+from szFeatures import twoFeaturesSZ
+
 class NewspaperRestorationApp:
     def __init__(self):
         self.trie = PrefixTrie()
         self.text_processor = TextProcessor()
+        self.sz = twoFeaturesSZ()
         
     def display_main_menu(self):
         print("\n" + "*"*65)
