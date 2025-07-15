@@ -6,7 +6,7 @@
 
 from trie import PrefixTrie
 from text_processor import TextProcessor
-from context_analyzer import integrate_context_analyzer
+from Ashley_Yong_Lok_Xi_2435781.context_analyzer import integrate_context_analyzer
 import os
 
 from szFeatures import twoFeaturesSZ
