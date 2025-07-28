@@ -7,15 +7,13 @@
 from trie import PrefixTrie
 from text_processor import TextProcessor
 from Ashley_Yong_Lok_Xi_2435781.context_analyzer import integrate_context_analyzer
+from Ashley_Yong_Lok_Xi_2435781.trie_visualizer import integrate_trie_visualizer
 import os
-
-from szFeatures import twoFeaturesSZ
 
 class NewspaperRestorationApp:
     def __init__(self):
         self.trie = PrefixTrie()
         self.text_processor = TextProcessor()
-        self.sz = twoFeaturesSZ()
         
     def display_main_menu(self):
         print("\n" + "*"*65)
@@ -35,7 +33,7 @@ class NewspaperRestorationApp:
         print("    4. Extra Feature Two (Yang Shu Zhi)")
         print("    "+"-"*52)
         print("    5. Context Analyzer (Ashley Yong Lok Xi)")
-        print("    6. Extra Feature Four (Ashley Yong Lok Xi)")
+        print("    6. Parse Tree Grammar Validation (Ashley Yong Lok Xi)")
         print("    "+"-"*52)
         print("    7. Exit")
         
@@ -242,9 +240,11 @@ class NewspaperRestorationApp:
                 elif choice == '4':
                     print("Additional Feature 2 - Not implemented yet")
                 elif choice == '5':
+                    print("Additional Feature 3 - Context Analyzer")
                     integrate_context_analyzer()
                 elif choice == '6':
-                    print("Additional Feature 4 - Not implemented yet")
+                    print("Additional Feature 4 - Parse Tree Grammar Validation")
+                    integrate_trie_visualizer()
                 elif choice == '7':
                     print("Thank you for using the Newspaper Restoration Application!")
                     break

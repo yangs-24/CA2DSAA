@@ -379,7 +379,7 @@ def context_analyzer_menu():
         else:
             print("Invalid choice. Please enter 1, 2, or 3.")
 
-# Integration example for the main application
+# Integration for the main application
 def integrate_context_analyzer():
     """
     Function to integrate context analyzer into the main newspaper restoration app
