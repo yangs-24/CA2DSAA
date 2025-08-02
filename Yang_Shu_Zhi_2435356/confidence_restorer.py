@@ -53,7 +53,6 @@ class ConfidenceRestorer:
                 print("1. Restore Word with Wildcards")
                 print("2. Exit to Main Menu")
                 print("-"*50)
-                ``
                 choice = input("Enter your choice (1-2): ").strip()
                 
                 if choice == '1':
