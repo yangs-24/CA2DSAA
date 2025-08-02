@@ -286,30 +286,7 @@ class PrefixTrie:
         except Exception as e:
             print(f"Error writing trie to file: {e}")
     
-    def edit_word_frequency(self, word, new_frequency):
-        """
-        Manually updates the frequency of an existing word in the trie.
-        Returns True if successful, False if word not found.
-        """
-        if not word:
-            return False
-
-        word = word.lower().strip()
-        node = self.root
-
-        for char in word:
-            if char not in node.children:
-                return False
-            node = node.children[char]
-
-        if node.is_terminal:
-            old_freq = node.frequency
-            node.frequency = new_frequency
-            print(f"Frequency for '{word}' updated from {old_freq} to {new_frequency}.")
-            return True
-        else:
-            print(f"'{word}' is a prefix but not a complete word in the trie.")
-            return False
+    
             
     def __len__(self):
         """Return the number of words in the trie."""
