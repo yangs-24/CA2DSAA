@@ -6,14 +6,21 @@
 
 from trie import PrefixTrie
 from text_processor import TextProcessor
+
 from Ashley_Yong_Lok_Xi_2435781.context_analyzer import integrate_context_analyzer
 from Ashley_Yong_Lok_Xi_2435781.trie_visualizer import integrate_trie_visualizer
+
+from Yang_Shu_Zhi_2435356.confidence_restorer import ConfidenceRestorer
+from Yang_Shu_Zhi_2435356.manual_freq_editor import ManualFrequencyEditor
+
 import os
 
 class NewspaperRestorationApp:
     def __init__(self):
         self.trie = PrefixTrie()
         self.text_processor = TextProcessor()
+        self.conf_restorer = ConfidenceRestorer()
+        self.freq_editor = ManualFrequencyEditor()
         
     def display_main_menu(self):
         print("\n" + "*"*65)
@@ -29,8 +36,8 @@ class NewspaperRestorationApp:
         print("    1. Construct/Edit Trie")
         print("    2. Predict/Restore Text")
         print("    "+"-"*52)
-        print("    3. Extra Feature One (Yang Shu Zhi)")
-        print("    4. Extra Feature Two (Yang Shu Zhi)")
+        print("    3. Restore Word with Confidence (Yang Shu Zhi)")
+        print("    4. Manual Frequency Editor (Yang Shu Zhi)")
         print("    "+"-"*52)
         print("    5. Context Analyzer (Ashley Yong Lok Xi)")
         print("    6. Parse Tree Grammar Validation (Ashley Yong Lok Xi)")
@@ -236,9 +243,9 @@ class NewspaperRestorationApp:
                 elif choice == '2':
                     self.predict_restore_text_menu()
                 elif choice == '3':
-                    print("Additional Feature 1 - Not implemented yet")
+                    self.conf_restorer.restore_confidence_menu()
                 elif choice == '4':
-                    print("Additional Feature 2 - Not implemented yet")
+                    self.freq_editor.manual_freq_menu()
                 elif choice == '5':
                     print("Additional Feature 3 - Context Analyzer")
                     integrate_context_analyzer()
