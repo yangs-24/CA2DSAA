@@ -243,8 +243,10 @@ class NewspaperRestorationApp:
                 elif choice == '2':
                     self.predict_restore_text_menu()
                 elif choice == '3':
+                    self.conf_restorer.trie = self.trie
                     self.conf_restorer.restore_confidence_menu()
                 elif choice == '4':
+                    self.conf_restorer.trie = self.trie
                     self.freq_editor.manual_freq_menu()
                 elif choice == '5':
                     print("Additional Feature 3 - Context Analyzer")

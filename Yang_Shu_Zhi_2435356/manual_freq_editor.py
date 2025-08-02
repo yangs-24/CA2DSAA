@@ -57,3 +57,52 @@ class ManualFrequencyEditor:
             return
         else:
             print("Invalid choice. Please try again.")
+
+
+    def manual_freq_menu(self):
+        """
+        Display the menu for manual frequency editing.
+        """
+        while True:
+            try:
+                print("\n" + "-"*50)
+                print("Manual Frequency Editor Menu:")
+                print("-"*50)
+                print("1. Edit Word Frequency")
+                print("2. Display All Word Frequencies")
+                print("3. Exit to Main Menu")
+                print("-"*50)
+
+                choice = input("Enter your choice (1-3): ").strip()
+
+                if choice == '1':
+                    word = input("Enter the word to edit frequency: ").strip()
+                    if not word:
+                        print("Invalid word. Please enter a valid word.")
+                        continue
+                        
+                    freq_input = input("Enter the new frequency: ").strip()
+                    try:
+                        new_freq = int(freq_input)
+                        if new_freq < 0:
+                            print("Frequency must be non-negative.")
+                            continue
+                        self.edit_frequency(word, new_freq)
+                    except ValueError:
+                        print("Invalid frequency value. Please enter a number.")
+                        
+                elif choice == '2':
+                    self.display_word_frequencies()
+                    
+                elif choice == '3':
+                    print("Returning to Main Menu...")
+                    break
+                    
+                else:
+                    print("Invalid choice. Please enter a number between 1 and 3.")
+                    
+            except KeyboardInterrupt:
+                print("\nReturning to Main Menu...")
+                break
+            except Exception as e:
+                print(f"Error: {e}")
