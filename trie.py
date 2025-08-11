@@ -84,73 +84,66 @@ class PrefixTrie:
         """
         if not word:
             return False
-            
+
         word = word.lower().strip()
-        
+
         def _delete_recursive(node, word, index):
             if index == len(word):
-                # Reached end of word
                 if not node.is_terminal:
-                    return False  # Word doesn't exist
-                    
+                    return False, False  # word doesn't exist
+
+                # Unmark this node as a terminal
                 node.is_terminal = False
                 node.frequency = 0
                 node.word = ""
                 self.size -= 1
-                
-                # Return True if node has no children (can be deleted)
-                return len(node.children) == 0
-                
+
+                # deleted = True, should_delete_node = (no children)
+                return True, len(node.children) == 0
+
             char = word[index]
             if char not in node.children:
-                return False  # Word doesn't exist
-                
-            child_node = node.children[char]
-            should_delete_child = _delete_recursive(child_node, word, index + 1)
-            
+                return False, False  # word doesn't exist
+
+            deleted, should_delete_child = _delete_recursive(node.children[char], word, index + 1)
+
             if should_delete_child:
                 del node.children[char]
-                # Return True if current node can be deleted
-                return not node.is_terminal and len(node.children) == 0
-                
-            return False
-            
-        return _delete_recursive(self.root, word, 0)
+
+            # deleted remains True if we actually removed the word somewhere down the chain
+            return deleted, not node.is_terminal and len(node.children) == 0
+
+        deleted, _ = _delete_recursive(self.root, word, 0)
+        return deleted
         
-    def find_all_matches(self, pattern):
-        """
-        Find all words that match a pattern with wildcards (*).
-        Returns a list of matching words sorted by frequency (descending).
-        Time Complexity: O(n) where n is the number of nodes in the trie
-        """
+    def find_all_matches_with_freq(self, pattern):
         if not pattern:
             return []
-            
+
         pattern = pattern.lower().strip()
         matches = []
-        
+
         def _find_matches(node, pattern_index, current_word):
             if pattern_index == len(pattern):
                 if node.is_terminal:
                     matches.append((node.word, node.frequency))
                 return
-                
+
             char = pattern[pattern_index]
-            
+
             if char == '*':
-                # Wildcard - try all possible characters
                 for child_char, child_node in node.children.items():
                     _find_matches(child_node, pattern_index + 1, current_word + child_char)
             else:
-                # Regular character
                 if char in node.children:
                     _find_matches(node.children[char], pattern_index + 1, current_word + char)
-                    
+
         _find_matches(self.root, 0, "")
-        
-        # Sort by frequency (descending) then alphabetically
+
+        # Sort by frequency (descending), then alphabetically
         matches.sort(key=lambda x: (-x[1], x[0]))
-        return [word for word, freq in matches]
+        return matches
+
         
     def find_best_match(self, pattern):
         """
@@ -158,7 +151,7 @@ class PrefixTrie:
         Returns the word with highest frequency, or None if no match.
         Time Complexity: O(n) where n is the number of nodes in the trie
         """
-        matches = self.find_all_matches(pattern)
+        matches = self.find_all_matches_with_freq(pattern)
         return matches[0] if matches else None
         
     def get_all_words(self):

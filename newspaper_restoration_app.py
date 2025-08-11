@@ -67,7 +67,7 @@ class NewspaperRestorationApp:
                 # split user input into command [0] and keyword [1:] ONLY IF keyword is inputted
                 command=user_input[0] 
                 keyword=user_input[1:].strip().lower() if len(user_input) > 1 else None
-                
+
                 if command == "+":
                     keyword=keyword or input("Enter keyword to add: ").strip().lower()
                     if keyword:
@@ -78,6 +78,7 @@ class NewspaperRestorationApp:
                         
                 elif command == '-':
                     keyword =keyword or input("Enter keyword to delete: ").strip().lower()
+                    
                     if keyword:
                         if self.trie.delete_keyword(keyword):
                             print(f"Keyword '{keyword}' deleted from trie.")
@@ -170,23 +171,33 @@ class NewspaperRestorationApp:
                     print("\nCurrent Trie:")
                     self.trie.display_trie()
                     
-                elif command == '$':
-                    pattern = input("Enter pattern with wildcards (*): ").strip().lower()
+                elif command.startswith('$'):
+                    pattern = command[1:].strip().lower() if len(command) > 1 else None
+                    if not pattern:
+                        pattern = input("Enter pattern with wildcards (*): ").strip().lower()
+
                     if pattern:
-                        matches = self.trie.find_all_matches(pattern)
+                        # Get matches with frequencies
+                        matches = self.trie.find_all_matches_with_freq(pattern)
                         if matches:
-                            print(f"Matching keywords: {matches}")
+                            print("Matching keywords:")
+                            for word, freq in matches:
+                                print(f"  {word} (freq: {freq})")
                         else:
                             print("No matches found.")
                     else:
                         print("Invalid pattern.")
                         
-                elif command == '?':
-                    pattern = input("Enter pattern with wildcards (*): ").strip().lower()
+                elif command.startswith('?'):
+                    pattern = command[1:].strip().lower() if len(command) > 1 else None
+                    if not pattern:
+                        pattern = input("Enter pattern with wildcards (*): ").strip().lower()
+
                     if pattern:
-                        best_match = self.trie.find_best_match(pattern)
-                        if best_match:
-                            print(f"Best match: {best_match}")
+                        matches = self.trie.find_all_matches_with_freq(pattern)
+                        if matches:
+                            best_word, best_freq = matches[0]
+                            print(f"Best match: {best_word} (freq: {best_freq})")
                         else:
                             print("No match found.")
                     else:
