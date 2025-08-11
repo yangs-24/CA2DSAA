@@ -152,7 +152,10 @@ class PrefixTrie:
         Time Complexity: O(n) where n is the number of nodes in the trie
         """
         matches = self.find_all_matches_with_freq(pattern)
-        return matches[0] if matches else None
+        if matches:
+            # Return only the word (first element of the tuple), not the frequency
+            return matches[0][0]
+        return None
         
     def get_all_words(self):
         """
