@@ -35,29 +35,21 @@ class ManualFrequencyEditor:
             print(f"'{word}' is a prefix, not a complete word.")
             return False
 
-    def manual_freq_menu(self):
+    def display_word_frequencies(self):
         """
-        Display the menu for manual frequency editing.
+        Displays all words and their frequencies from the trie.
         """
-        print("\nManual Frequency Editor Menu:")
-        print("1. Edit Word Frequency")
-        print("2. Exit")
-
-        choice = input("Enter your choice: ")
-        if choice == '1':
-            word = input("Enter the word to edit frequency: ")
-            new_freq = input("Enter the new frequency: ")
-            try:
-                new_freq = int(new_freq)
-                if self.edit_frequency(word, new_freq):
-                    print(f"Frequency for '{word}' successfully updated.")
-            except ValueError:
-                print("Invalid frequency value. Please enter a number.")
-        elif choice == '2':
+        all_words = self.trie.get_all_words()
+        if not all_words:
+            print("The trie is currently empty.")
             return
-        else:
-            print("Invalid choice. Please try again.")
 
+        print("\n" + "-"*50)
+        print("Word Frequencies:")
+        print("-"*50)
+        for word, freq in all_words:
+            print(f"- {word}: {freq}")
+        print("-"*50)
 
     def manual_freq_menu(self):
         """

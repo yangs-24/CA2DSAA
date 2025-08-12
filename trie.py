@@ -140,7 +140,7 @@ class PrefixTrie:
         Returns the word with highest frequency, or None if no match.
         Time Complexity: O(n) where n is the number of nodes in the trie
         """
-        matches = self.wildcard_search(pattern)
+        matches = self.find_all_matches_with_freq(pattern)
         return matches[0] if matches else None
         
     def get_all_words(self):

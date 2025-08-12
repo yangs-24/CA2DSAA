@@ -15,29 +15,19 @@ class ConfidenceRestorer:
         """
         Restore a wildcard word using matches from the trie and show confidence scores.
         """
-        matches = self.trie.find_all_matches(word_with_wildcards)
+        matches = self.trie.find_all_matches_with_freq(word_with_wildcards)
         if not matches:
             print(f"No matches found for '{word_with_wildcards}'.")
             return
 
-        # Get word frequencies from the trie
-        total_frequency = 0
-        word_frequencies = []
-
-        for word in matches:
-            node = self.trie.root
-            for char in word:
-                node = node.children[char]
-
-            if node and node.is_terminal:
-                word_frequencies.append((word, node.frequency))
-                total_frequency += node.frequency
+        # total_frequency is the sum of frequencies of all matches
+        total_frequency = sum(freq for _, freq in matches)
 
         # Display the results
         print(f"Restoring: {word_with_wildcards}")
         print("Possible Matches with Confidence Scores:")
-        for word, freq in word_frequencies:
-            confidence = (freq / total_frequency) * 100
+        for word, freq in matches:
+            confidence = (freq / total_frequency) * 100 if total_frequency > 0 else 0
             print(f" - {word} ({confidence:.2f}%)")
 
 
