@@ -144,7 +144,7 @@ class NewspaperRestorationApp:
     def predict_restore_text_menu(self):
         print("-" * 63)
         print("\nPredict/Restore Text Commands:")
-        print("'~', '#', '$', '&', '@', '!', '\'")
+        print("'~', '#', '$', '?', '&', '@', '!', '\'")
         print("-" * 63)
         print("~ : Read keywords from a file to make a new prefix trie")
         print("# : Display the current prefix trie on the screen")
