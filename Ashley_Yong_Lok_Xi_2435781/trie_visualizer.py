@@ -72,26 +72,54 @@ def split_into_syllables(word):
     return [s.lower() for s in syllables if s]
 
 def integrate_trie_visualizer():
-    """Run syllable trie visualizer in y/n loop and label roots clearly."""
+    """Mini menu for syllable trie visualizer with text/file input options."""
     while True:
-        paragraph = input("\nEnter a sentence or paragraph to visualize as a syllable-based trie: ").strip()
-        if not paragraph:
-            print("No input provided. Try again.")
+        print("\n" + "="*50)
+        print("SYLLABLE TRIE VISUALIZER")
+        print("="*50)
+        print("1. Visualize text from input")
+        print("2. Visualize text from file")
+        print("3. Back to main menu")
+        
+        choice = input("\nEnter your choice (1-3): ").strip()
+        
+        if choice == '1':
+            paragraph = input("\nEnter a sentence or paragraph to visualize as a syllable-based trie: ").strip()
+            if not paragraph:
+                print("No input provided. Try again.")
+                continue
+            
+        elif choice == '2':
+            filename = input("Enter filename to read from: ").strip()
+            try:
+                with open(filename, 'r', encoding='utf-8') as file:
+                    paragraph = file.read()
+                if not paragraph.strip():
+                    print(f"File '{filename}' is empty. Try again.")
+                    continue
+                print(f"Read content from file '{filename}'.")
+            except FileNotFoundError:
+                print(f"Error: File '{filename}' not found. Try again.")
+                continue
+            except Exception as e:
+                print(f"Error reading file: {e}. Try again.")
+                continue
+            
+        elif choice == '3':
+            print("Returning to main menu.")
+            break
+        
+        else:
+            print("Invalid choice, please enter 1, 2 or 3.")
             continue
-
+        
+        # Process the paragraph text (from input or file)
         words = [word.strip(".,!?;:()[]{}\"'").lower() for word in paragraph.split()]
         trie = Trie()
         for i, word in enumerate(words):
             syllables = split_into_syllables(word)
             if syllables:
                 trie.insert(syllables, i + 1)
-
+        
         print(f"\nWords inserted as syllables: {[split_into_syllables(word) for word in words]}")
         trie.visualize()
-
-        again = input("\nWould you like to visualize another paragraph? (y/n): ").strip().lower()
-        while again not in ["y", "n"]:
-            again = input("Please enter only 'y' or 'n': ").strip().lower()
-        if again == "n":
-            print("Exiting trie visualizer.")
-            break
