@@ -9,71 +9,91 @@ class TextProcessor:
     def __init__(self):
         pass
 
-    def restore_text_all_matches(self, input_file, output_file, trie):
+    def restore_text_all_matches(self, filename, output_filename, trie):
         """
-        Restore text from input file using all possible matches from the trie
-        and save the restored text to output file.
+        Reads a file with wildcard words, finds all possible matches in the trie.
+        Prints the restored lines or saves them to a file.
         """
         try:
-            with open(input_file, 'r', encoding='utf-8') as infile:
-                text = infile.read()
+            restored_lines = []
+            with open(filename, 'r', encoding='utf-8') as f:
+                for line in f:
+                    words = line.strip().split()
+                    restored_words = []
+                    for w in words:
+                        if '*' in w:
+                            matches = trie.find_all_matches_with_freq(w.lower())
+                            # Format matches while preserving original case
+                            matched_words = [match_case_pattern(w, m[0]) for m in matches]
+                            restored_words.append(str(matched_words))
+                        else:
+                            restored_words.append(w)
+                    restored_lines.append(' '.join(restored_words))
 
-            # Find all words with wildcards (*) - simple and effective pattern
-            # This matches any sequence of letters and asterisks that contains at least one asterisk
-            wildcard_words = re.findall(r'[a-zA-Z]*\*[a-zA-Z]*', text)
-            # Remove empty matches and duplicates
-            wildcard_words = list(set([w for w in wildcard_words if w and w != '*']))
+            if output_filename:
+                with open(output_filename, 'w', encoding='utf-8') as outfile:
+                    for line in restored_lines:
+                        outfile.write(line + '\n')
+                print(f"\nRestored text successfully saved to '{output_filename}'.")
+            else:
+                print("\n--- Restored Text (All Matches) ---")
+                for line in restored_lines:
+                    print(line)
+                print("--- End of Text ---")
 
-            print(f"Found wildcard words: {wildcard_words}")  # Debug output
-
-            for word in wildcard_words:
-                matches = trie.find_all_matches_with_freq(word)
-                if matches:
-                    # Extract only the words from the (word, frequency) tuples
-                    match_words = [match[0] for match in matches]
-                    # Format into a single list string like ['word1','word2']
-                    replacement = f"[{','.join(repr(w) for w in match_words)}]"
-                    # Use word boundary regex to replace exact matches only
-                    pattern_re = re.compile(rf"\b{re.escape(word)}\b")
-                    text = pattern_re.sub(replacement, text)
-                    print(f"Replaced '{word}' with {replacement}")  # Debug output
-                else:
-                    print(f"No matches found for '{word}'")  # Debug output
-
-            with open(output_file, 'w', encoding='utf-8') as outfile:
-                outfile.write(text)
-
+        except FileNotFoundError:
+            print(f"Error: File '{filename}' not found.")
         except Exception as e:
-            print(f"Error processing file: {e}")
+            print(f"An error occurred: {e}")
 
     def restore_text_best_matches(self, input_file, output_file, trie):
         """
-        Restore text from input file using best matches from the trie
-        and save the restored text to output file.
+        Reads a file with wildcard words, finds the best match for each in the trie.
+        Prints the restored lines or saves them to a file.
         """
         try:
-            with open(input_file, 'r', encoding='utf-8') as infile:
-                text = infile.read()
+            restored_lines = []
+            with open(input_file, 'r', encoding='utf-8') as f:
+                for line in f:
+                    words = line.strip().split()
+                    restored_words = []
+                    for w in words:
+                        if '*' in w:
+                            best_match = trie.find_best_match(w.lower())
+                            if best_match:
+                                # Format the best match and preserve case
+                                restored_word = f"<{match_case_pattern(w, best_match[0])}>"
+                                restored_words.append(restored_word)
+                            else:
+                                restored_words.append(w)  # No match found
+                        else:
+                            restored_words.append(w)
+                    restored_lines.append(' '.join(restored_words))
 
-            # Find all words with wildcards (*) - improved pattern
-            # This pattern captures any sequence containing asterisks and word characters
-            wildcard_words = re.findall(r'\b[\w*]*\*[\w*]*\b', text)
-
-            print(f"Found wildcard words: {wildcard_words}")  # Debug output
-
-            for word in wildcard_words:
-                best_match = trie.find_best_match(word)
-                if best_match:
-                    replacement = f"<{best_match}>"
-                    # Use word boundary regex to replace exact matches only
-                    pattern_re = re.compile(rf"\b{re.escape(word)}\b")
-                    text = pattern_re.sub(replacement, text)
-                    print(f"Replaced '{word}' with {replacement}")  # Debug output
-                else:
-                    print(f"No match found for '{word}'")  # Debug output
-
-            with open(output_file, 'w', encoding='utf-8') as outfile:
-                outfile.write(text)
-
+            if output_file:
+                with open(output_file, 'w', encoding='utf-8') as outfile:
+                    for line in restored_lines:
+                        outfile.write(line + '\n')
+                print(f"\nRestored text successfully saved to '{output_file}'.")
+            else:
+                print("\n--- Restored Text (Best Matches) ---")
+                for line in restored_lines:
+                    print(line)
+                print("--- End of Text ---")
+                
+        except FileNotFoundError:
+            print(f"Error: File '{input_file}' not found.")
         except Exception as e:
-            print(f"Error processing file: {e}")
+            print(f"An error occurred: {e}")
+
+def match_case_pattern(original, matched):
+    # Applies the capitalization pattern of `original` to `matched`
+    result = []
+    for o_char, m_char in zip(original, matched):
+        if o_char.isupper():
+            result.append(m_char.upper())
+        else:
+            result.append(m_char.lower())
+    # Append any remaining characters in matched (lowercase)
+    result.extend(matched[len(original):])
+    return ''.join(result)

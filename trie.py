@@ -117,32 +117,21 @@ class PrefixTrie:
         return deleted
         
     def find_all_matches_with_freq(self, pattern):
-        if not pattern:
-            return []
+        results = []
 
-        pattern = pattern.lower().strip()
-        matches = []
-
-        def _find_matches(node, pattern_index, current_word):
-            if pattern_index == len(pattern):
+        def dfs(node, i, path):
+            if i == len(pattern):
                 if node.is_terminal:
-                    matches.append((node.word, node.frequency))
+                    results.append((path, node.frequency))
                 return
-
-            char = pattern[pattern_index]
-
-            if char == '*':
-                for child_char, child_node in node.children.items():
-                    _find_matches(child_node, pattern_index + 1, current_word + child_char)
-            else:
-                if char in node.children:
-                    _find_matches(node.children[char], pattern_index + 1, current_word + char)
-
-        _find_matches(self.root, 0, "")
-
-        # Sort by frequency (descending), then alphabetically
-        matches.sort(key=lambda x: (-x[1], x[0]))
-        return matches
+            if pattern[i] == '*':
+                for char, child in node.children.items():
+                    dfs(child, i + 1, path + char)
+            elif pattern[i] in node.children:
+                dfs(node.children[pattern[i]], i + 1, path + pattern[i])
+        dfs(self.root, 0, '')
+        results.sort(key=lambda x: -x[1])  # sort by frequency descending
+        return results
 
         
     def find_best_match(self, pattern):
@@ -151,11 +140,8 @@ class PrefixTrie:
         Returns the word with highest frequency, or None if no match.
         Time Complexity: O(n) where n is the number of nodes in the trie
         """
-        matches = self.find_all_matches_with_freq(pattern)
-        if matches:
-            # Return only the word (first element of the tuple), not the frequency
-            return matches[0][0]
-        return None
+        matches = self.wildcard_search(pattern)
+        return matches[0] if matches else None
         
     def get_all_words(self):
         """
